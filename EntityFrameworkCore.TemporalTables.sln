@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2016
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkCore.TemporalTables", "EntityFrameworkCore.TemporalTables\EntityFrameworkCore.TemporalTables.csproj", "{DA5BA862-9D60-4C81-993C-FBDEC9CC0339}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DA5BA862-9D60-4C81-993C-FBDEC9CC0339}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA5BA862-9D60-4C81-993C-FBDEC9CC0339}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA5BA862-9D60-4C81-993C-FBDEC9CC0339}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA5BA862-9D60-4C81-993C-FBDEC9CC0339}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {42ADA7B8-B29A-46B7-A6C8-13FB615474BF}
+	EndGlobalSection
+EndGlobal
