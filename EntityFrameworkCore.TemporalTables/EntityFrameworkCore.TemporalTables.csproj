@@ -2,6 +2,44 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Authors>George Findulov</Authors>
+    <Company />
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="SqlTemplates\CheckIfTemporalTableExists.sql" />
+    <None Remove="SqlTemplates\CreateTemporalTable.sql" />
+    <None Remove="SqlTemplates\DropTemporalTable.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="SqlTemplates\Templates\IsDatabaseTableTemporal.sql" />
+    <EmbeddedResource Include="SqlTemplates\Templates\DropTemporalTable.sql" />
+    <EmbeddedResource Include="SqlTemplates\Templates\CreateTemporalTable.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="SqlTemplates\SqlTemplates.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SqlTemplates.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="SqlTemplates\SqlTemplates.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SqlTemplates.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
 
 </Project>

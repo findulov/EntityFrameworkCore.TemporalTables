@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2016
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkCore.TemporalTables", "EntityFrameworkCore.TemporalTables\EntityFrameworkCore.TemporalTables.csproj", "{DA5BA862-9D60-4C81-993C-FBDEC9CC0339}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFrameworkCore.TemporalTables", "EntityFrameworkCore.TemporalTables\EntityFrameworkCore.TemporalTables.csproj", "{DA5BA862-9D60-4C81-993C-FBDEC9CC0339}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFrameworkCore.TemporalTables.TestApp", "EntityFrameworkCore.TemporalTables.TestApp\EntityFrameworkCore.TemporalTables.TestApp.csproj", "{A292790B-B872-4C43-820F-6B13DF78AEE2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkCore.TemporalTables.Tests", "EntityFrameworkCore.TemporalTables.Tests\EntityFrameworkCore.TemporalTables.Tests.csproj", "{70930D00-F249-4B91-B390-C2780651E0E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{DA5BA862-9D60-4C81-993C-FBDEC9CC0339}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA5BA862-9D60-4C81-993C-FBDEC9CC0339}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA5BA862-9D60-4C81-993C-FBDEC9CC0339}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A292790B-B872-4C43-820F-6B13DF78AEE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A292790B-B872-4C43-820F-6B13DF78AEE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A292790B-B872-4C43-820F-6B13DF78AEE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A292790B-B872-4C43-820F-6B13DF78AEE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70930D00-F249-4B91-B390-C2780651E0E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70930D00-F249-4B91-B390-C2780651E0E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70930D00-F249-4B91-B390-C2780651E0E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70930D00-F249-4B91-B390-C2780651E0E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
