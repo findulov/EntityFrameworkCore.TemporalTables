@@ -39,7 +39,7 @@ In ``OnModelCreating(ModelBuilder modelBuilder)`` method you have the following 
 * ``modelBuilder.PreventTemporalTables()`` - do not create temporal table for none of your entities by default.
 
 * ``modelBuilder.Entity<TEntity>(b => b.UseTemporalTable());`` - create a temporal table for the specified entity ``TEntity``. This method is compatible with ``UseTemporalTables()`` and ``PreventTemporalTables()`` methods - e.g. you can call ``PreventTemporalTables()`` and then only register the entities you want.
-* ``modelBuilder.Entity<TEntity>(b => b.PreventTemporalTable());`` - do not create a temporal table for the specified entity ``TEntity``. This method is compatible with ``UseTemporalTables()`` and ``PreventTemporalTables()`` methods.
+* ``modelBuilder.Entity<TEntity>(b => b.PreventTemporalTable());`` - do not create a temporal table for the specified entity ``TEntity``. This method is also compatible with ``UseTemporalTables()`` and ``PreventTemporalTables()`` methods.
 
 <br />
 You can refer to the <a href="https://github.com/findulov/EntityFrameworkCore.TemporalTables/tree/master/EntityFrameworkCore.TemporalTables.TestApp">sample application</a> for more configuration information.
