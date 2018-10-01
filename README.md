@@ -1,5 +1,5 @@
 # EntityFrameworkCore.TemporalTables
-Extension library which allows Entity Framework Core developers who use SQL Server to easily use temporal tables.
+Extension library for Entity Framework Core which allows developers who use SQL Server to easily use temporal tables.
 
 How to use it?
 
