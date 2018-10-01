@@ -30,7 +30,7 @@ namespace EntityFrameworkCore.TemporalTables.Sql
 
             foreach (var entityType in entityTypes)
             {
-                string sql = BuildTemporalTableSqlFromEntityTypeConfiguration(entityType, appendSeparator: true);
+                string sql = BuildTemporalTableSqlFromEntityTypeConfiguration(entityType, appendSeparator);
 
                 if (!string.IsNullOrWhiteSpace(sql))
                 {

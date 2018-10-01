@@ -41,6 +41,7 @@ namespace EntityFrameworkCore.TemporalTables.Sql
         {
             // If OnModelCreating() method in the DbContext is not called yet, TemporalEntitiesCache will not be called
             // to cache the configuration for entity types and temporal tables SQL code will not be generated.
+            // In such scenario, we just need to open a database connection manually to trigger OnModelCreating() and then close it.
 
             var entityTypes = getEntityTypesFromCache();
 

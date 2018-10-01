@@ -1,12 +1,9 @@
-﻿using EntityFrameworkCore.TemporalTables.Cache;
-using EntityFrameworkCore.TemporalTables.Sql;
-using EntityFrameworkCore.TemporalTables.Sql.Factory;
+﻿using EntityFrameworkCore.TemporalTables.Sql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
-using System.Linq;
 
 namespace EntityFrameworkCore.TemporalTables.Migrations
 {
