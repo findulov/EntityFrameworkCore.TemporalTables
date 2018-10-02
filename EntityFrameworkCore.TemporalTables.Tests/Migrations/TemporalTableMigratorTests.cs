@@ -79,9 +79,11 @@ namespace EntityFrameworkCore.TemporalTables.Tests.Migrations
                 var entityType = context.Model.FindEntityType(typeof(TEntity));
 
                 var temporalTableSqlBuilder = new TemporalTableSqlBuilder<FakeDataContext>(
-                    new TemporalTableSqlGeneratorFactory(), tableHelper);
+                    context,
+                    new TemporalTableSqlGeneratorFactory(),
+                    tableHelper);
 
-                string sql = temporalTableSqlBuilder.BuildTemporalTableSqlForEntityTypes(new[] { entityType });
+                string sql = temporalTableSqlBuilder.BuildTemporalTablesSqlForEntityTypes(new[] { entityType });
 
                 return sql;
             }

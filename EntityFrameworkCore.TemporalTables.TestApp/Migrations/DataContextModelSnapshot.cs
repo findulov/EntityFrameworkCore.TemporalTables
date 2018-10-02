@@ -37,7 +37,7 @@ namespace EntityFrameworkCore.TemporalTables.TestApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("IsDeleted");
+                    b.Property<bool>("IsDeleted");
 
                     b.Property<string>("Password");
 

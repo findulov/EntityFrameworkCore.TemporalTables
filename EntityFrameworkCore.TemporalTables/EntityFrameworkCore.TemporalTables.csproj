@@ -11,7 +11,7 @@
     <FileVersion>1.0.2.0</FileVersion>
     <RepositoryUrl>https://github.com/findulov/EntityFrameworkCore.TemporalTables</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageProjectUrl></PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/findulov/EntityFrameworkCore.TemporalTables</PackageProjectUrl>
     <Description>Extension library for Entity Framework Core which allows developers who use SQL Server to easily use temporal tables.</Description>
   </PropertyGroup>
 

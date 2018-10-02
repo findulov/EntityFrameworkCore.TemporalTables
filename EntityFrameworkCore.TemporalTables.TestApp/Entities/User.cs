@@ -8,6 +8,6 @@
 
         public string Password { get; set; }
         
-        public string IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

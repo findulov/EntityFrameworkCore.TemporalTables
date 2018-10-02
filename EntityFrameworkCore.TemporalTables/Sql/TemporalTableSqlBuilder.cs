@@ -4,6 +4,7 @@ using EntityFrameworkCore.TemporalTables.Sql.Generation;
 using EntityFrameworkCore.TemporalTables.Sql.Table;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,19 +13,30 @@ namespace EntityFrameworkCore.TemporalTables.Sql
     public class TemporalTableSqlBuilder<TContext> : ITemporalTableSqlBuilder<TContext>
         where TContext : DbContext
     {
+        private readonly TContext context;
         private readonly ITemporalTableSqlGeneratorFactory temporalTableSqlGeneratorFactory;
         private readonly ITableHelper<TContext> tableHelper;
 
         public TemporalTableSqlBuilder(
+            TContext context,
             ITemporalTableSqlGeneratorFactory temporalTableSqlGeneratorFactory,
             ITableHelper<TContext> tableHelper)
         {
+            this.context = context;
             this.temporalTableSqlGeneratorFactory = temporalTableSqlGeneratorFactory;
             this.tableHelper = tableHelper;
         }
 
         /// <inheritdoc />
-        public string BuildTemporalTableSqlForEntityTypes(IEnumerable<IEntityType> entityTypes, bool appendSeparator = true)
+        public string BuildTemporalTablesSql(bool appendSeparator = true)
+        {
+            var entityTypes = EnsureTemporalEntitiesCacheIsInitialized(() => TemporalEntitiesCache.GetAll());
+
+            return BuildTemporalTablesSqlForEntityTypes(entityTypes);
+        }
+
+        /// <inheritdoc />
+        public string BuildTemporalTablesSqlForEntityTypes(IEnumerable<IEntityType> entityTypes, bool appendSeparator = true)
         {
             StringBuilder sqlBuilder = new StringBuilder();
 
@@ -69,6 +81,25 @@ namespace EntityFrameworkCore.TemporalTables.Sql
             }
 
             return sqlBuilder.ToString();
+        }
+
+        private IReadOnlyList<IEntityType> EnsureTemporalEntitiesCacheIsInitialized(Func<IReadOnlyList<IEntityType>> getEntityTypesFromCache)
+        {
+            // If OnModelCreating() method in the DbContext is not called yet, TemporalEntitiesCache will not be called
+            // to cache the configuration for entity types and temporal tables SQL code will not be generated.
+            // In such scenario, we just need to open a database connection manually to trigger OnModelCreating() and then close it.
+
+            var entityTypes = getEntityTypesFromCache();
+
+            if (entityTypes.Count == 0)
+            {
+                context.Database.OpenConnection();
+                context.Database.CloseConnection();
+
+                entityTypes = getEntityTypesFromCache();
+            }
+
+            return entityTypes;
         }
     }
 }
