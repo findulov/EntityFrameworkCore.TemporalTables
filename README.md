@@ -3,7 +3,7 @@ Extension library for Entity Framework Core which allows developers who use SQL 
 
 How to use it?
 
---------------------------------------------- Service Provider configuration ---------------------------------------------
+<h2>Service Provider configuration</h2>
 
 1. Use ``UseInternalServiceProvider()`` on ``DbContextOptionsBuilder`` when registering your DbContext to replace Entity Framework's internal service provider with yours. For example:
 
@@ -31,7 +31,7 @@ temporalTableSqlExecutor.Execute();
 
 <br />
 
---------------------------------------------- DbContext configuration ---------------------------------------------
+<h2>DbContext configuration</h2>
 
 In ``OnModelCreating(ModelBuilder modelBuilder)`` method you have the following options:
 
