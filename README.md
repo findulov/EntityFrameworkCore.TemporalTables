@@ -43,3 +43,5 @@ In ``OnModelCreating(ModelBuilder modelBuilder)`` method you have the following 
 
 <br />
 You can refer to the <a href="https://github.com/findulov/EntityFrameworkCore.TemporalTables/tree/master/EntityFrameworkCore.TemporalTables.TestApp">sample application</a> for more configuration information.
+
+You can install the NuGet package from here: https://www.nuget.org/packages/EntityFrameworkCore.TemporalTables/
