@@ -12,7 +12,9 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
         /// </summary>
         public static void UseTemporalTables(this ModelBuilder modelBuilder)
         {
-            var entityTypes = modelBuilder.Model.GetEntityTypes().ToList();
+            var entityTypes = modelBuilder.Model.GetEntityTypes()
+                .Where(e => !e.IsOwned())
+                .ToList();
 
             foreach (var entityType in entityTypes)
             {
@@ -26,7 +28,9 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
         /// </summary>
         public static void PreventTemporalTables(this ModelBuilder modelBuilder)
         {
-            var entityTypes = modelBuilder.Model.GetEntityTypes().ToList();
+            var entityTypes = modelBuilder.Model.GetEntityTypes()
+                .Where(e => !e.IsOwned())
+                .ToList();
 
             foreach (var entityType in entityTypes)
             {
