@@ -21,18 +21,18 @@ namespace EntityFrameworkCore.TemporalTables.TestApp
 
             modelBuilder.UseTemporalTables();
 
-            modelBuilder.Entity<User>(b =>
-            {
-                b.UseTemporalTable();
+            //modelBuilder.Entity<User>(b =>
+            //{
+            //    b.UseTemporalTable();
 
-                b.HasData(new User
-                {
-                    Id = 1,
-                    UserName = "testUser",
-                    Password = "testPassword",
-                    IsDeleted = false
-                });
-            });
+            //    b.HasData(new User
+            //    {
+            //        Id = 1,
+            //        UserName = "testUser",
+            //        Password = "testPassword",
+            //        IsDeleted = false
+            //    });
+            //});
 
             modelBuilder.Entity<Role>(b => b.PreventTemporalTable());
         }

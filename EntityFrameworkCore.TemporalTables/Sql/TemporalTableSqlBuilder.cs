@@ -57,10 +57,10 @@ namespace EntityFrameworkCore.TemporalTables.Sql
         {
             StringBuilder sqlBuilder = new StringBuilder();
 
-            var relationalEntityType = entityType.Relational();
+            var relationalEntityType = context.Model.FindEntityType(entityType.Name);
 
-            string tableName = relationalEntityType.TableName;
-            string schema = relationalEntityType.Schema ?? "dbo";
+            string tableName = relationalEntityType.GetTableName();
+            string schema = relationalEntityType.GetSchema() ?? "dbo";
 
             bool isEntityConfigurationTemporal = TemporalEntitiesCache.IsEntityConfigurationTemporal(entityType);
             bool isEntityTemporalInDatabase = tableHelper.IsTableTemporal(tableName, schema);

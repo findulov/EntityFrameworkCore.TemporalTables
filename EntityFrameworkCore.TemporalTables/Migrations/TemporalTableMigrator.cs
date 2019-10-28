@@ -1,6 +1,7 @@
 ﻿using EntityFrameworkCore.TemporalTables.Sql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -11,7 +12,7 @@ namespace EntityFrameworkCore.TemporalTables.Migrations
         where TContext : DbContext
     {
         private readonly ITemporalTableSqlExecutor<TContext> temporalTableSqlExecutor;
-
+        
         public TemporalTableMigrator(
             IMigrationsAssembly migrationsAssembly,
             IHistoryRepository historyRepository,
@@ -19,11 +20,14 @@ namespace EntityFrameworkCore.TemporalTables.Migrations
             IMigrationsSqlGenerator migrationsSqlGenerator,
             IRawSqlCommandBuilder rawSqlCommandBuilder,
             IMigrationCommandExecutor migrationCommandExecutor,
-            IRelationalConnection connection, ISqlGenerationHelper sqlGenerationHelper,
+            IRelationalConnection connection,
+            ISqlGenerationHelper sqlGenerationHelper,
+            ICurrentDbContext currentDbContext,
             IDiagnosticsLogger<DbLoggerCategory.Migrations> logger,
+            IDiagnosticsLogger<DbLoggerCategory.Database.Command> commandLogger,
             IDatabaseProvider databaseProvider,
             ITemporalTableSqlExecutor<TContext> temporalTableSqlExecutor)
-            : base(migrationsAssembly, historyRepository, databaseCreator, migrationsSqlGenerator, rawSqlCommandBuilder, migrationCommandExecutor, connection, sqlGenerationHelper, logger, databaseProvider)
+            : base(migrationsAssembly, historyRepository, databaseCreator, migrationsSqlGenerator, rawSqlCommandBuilder, migrationCommandExecutor, connection, sqlGenerationHelper, currentDbContext, logger, commandLogger, databaseProvider)
         {
             this.temporalTableSqlExecutor = temporalTableSqlExecutor;
         }

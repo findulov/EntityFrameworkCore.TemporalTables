@@ -32,7 +32,7 @@ namespace EntityFrameworkCore.TemporalTables.TestApp
                 .BuildServiceProvider();
 
             var dbContext = serviceProvider.GetService<DataContext>();
-            
+
             // Update temporal tables automatically by calling Migrate() / MigrateAsync() or Update-Database from Package Manager Console.
             dbContext.Database.Migrate();
 
