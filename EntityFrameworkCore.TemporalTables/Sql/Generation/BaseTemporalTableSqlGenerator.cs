@@ -27,7 +27,7 @@ namespace EntityFrameworkCore.TemporalTables.Sql.Generation
             }
 
             TableWithSchema = $"[{schemaName}].[{tableName}]";
-            HistoryTableName = $"{schemaName}.{tableName}History";
+            HistoryTableName = $"[{schemaName}].[{tableName}History]";
             SysTimeConstraint = schemaName == "dbo"
                 ? tableName
                 : $"{schemaName}_{tableName}";
