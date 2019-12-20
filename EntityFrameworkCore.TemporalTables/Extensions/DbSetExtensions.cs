@@ -1,12 +1,12 @@
-﻿namespace EntityFrameworkCore.TemporalTables.Extensions
-{
-    using System;
-    using System.Linq;
-    using EntityFrameworkCore.TemporalTables.Cache;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Infrastructure;
-    using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using System.Linq;
+using EntityFrameworkCore.TemporalTables.Cache;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 
+namespace EntityFrameworkCore.TemporalTables.Extensions
+{
     public static class DbSetExtensions
     {
         /// <summary>
