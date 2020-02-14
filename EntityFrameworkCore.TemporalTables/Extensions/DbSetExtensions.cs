@@ -16,7 +16,7 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
         /// <param name="dbSet">The database set.</param>
         /// <param name="date">The date.</param>
         /// <returns>The entities represented at the specified time.</returns>
-        public static IQueryable<TEntity> AsOf<TEntity>(this DbSet<TEntity> dbSet, DateTimeOffset date)
+        public static IQueryable<TEntity> AsOf<TEntity>(this DbSet<TEntity> dbSet, DateTime date)
             where TEntity : class
         {
             ValidateDbSet(dbSet);
@@ -35,7 +35,7 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
         /// <returns>The entities found between the provided dates.</returns>
         /// <remarks>The same entity might be returned more than once if it was modified
         /// during that time frame.</remarks>
-        public static IQueryable<TEntity> Between<TEntity>(this DbSet<TEntity> dbSet, DateTimeOffset startDate, DateTimeOffset endDate)
+        public static IQueryable<TEntity> Between<TEntity>(this DbSet<TEntity> dbSet, DateTime startDate, DateTime endDate)
             where TEntity : class
         {
             ValidateDbSet(dbSet);
