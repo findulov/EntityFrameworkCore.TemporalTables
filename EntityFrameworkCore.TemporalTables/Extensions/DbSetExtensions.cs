@@ -26,6 +26,22 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
         }
 
         /// <summary>
+        /// Filters the DbSet with entities at a given date and time.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="dbSet">The database set.</param>
+        /// <param name="dateTimeOffset">The date time offset.</param>
+        /// <returns>The entities represented at the specified time.</returns>
+        public static IQueryable<TEntity> AsOf<TEntity>(this DbSet<TEntity> dbSet, DateTimeOffset dateTimeOffset)
+            where TEntity : class
+        {
+            ValidateDbSet(dbSet);
+
+            var sql = FormattableString.Invariant($"SELECT * FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME AS OF {{0}}");
+            return dbSet.FromSqlRaw(sql, dateTimeOffset).AsNoTracking();
+        }
+
+        /// <summary>
         /// Filters the DbSet with entities between the provided dates.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
@@ -42,6 +58,25 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
 
             var sql = FormattableString.Invariant($"SELECT * FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME BETWEEN {{0}} AND {{1}}");
             return dbSet.FromSqlRaw(sql, startDate, endDate).AsNoTracking();
+        }
+
+        /// <summary>
+        /// Filters the DbSet with entities between the provided dates.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="dbSet">The database set.</param>
+        /// <param name="startDateOffset">The start date time offset.</param>
+        /// <param name="endDateOffset">The end date time offset.</param>
+        /// <returns>The entities found between the provided dates.</returns>
+        /// <remarks>The same entity might be returned more than once if it was modified
+        /// during that time frame.</remarks>
+        public static IQueryable<TEntity> Between<TEntity>(this DbSet<TEntity> dbSet, DateTimeOffset startDateOffset, DateTimeOffset endDateOffset)
+            where TEntity : class
+        {
+            ValidateDbSet(dbSet);
+
+            var sql = FormattableString.Invariant($"SELECT * FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME BETWEEN {{0}} AND {{1}}");
+            return dbSet.FromSqlRaw(sql, startDateOffset, endDateOffset).AsNoTracking();
         }
 
         /// <summary>
