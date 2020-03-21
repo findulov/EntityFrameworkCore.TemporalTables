@@ -4,6 +4,13 @@
 	FROM   sys.tables
 	WHERE  object_id = OBJECT_ID('{TABLE_WITH_SCHEMA}', 'u') AND temporal_type = 2
 )
+AND
+EXISTS	-- if the base table exists
+(
+	SELECT 1
+	FROM   sys.tables
+	WHERE  object_id = OBJECT_ID('{TABLE_WITH_SCHEMA}', 'u')
+)
 BEGIN
     ALTER TABLE {TABLE_WITH_SCHEMA} SET (SYSTEM_VERSIONING = OFF);
 

@@ -7,8 +7,8 @@ namespace EntityFrameworkCore.TemporalTables.Sql.Generation
     /// </summary>
     public class NoSqlTemporalTableGenerator : BaseTemporalTableSqlGenerator
     {
-        public NoSqlTemporalTableGenerator(string schemaName, string tableName)
-            : base(schemaName, tableName)
+        public NoSqlTemporalTableGenerator(string tableName, string schemaName)
+            : base(tableName, schemaName)
         {
         }
 

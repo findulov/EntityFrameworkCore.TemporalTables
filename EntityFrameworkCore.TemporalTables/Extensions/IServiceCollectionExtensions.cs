@@ -22,6 +22,7 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
             services.AddScoped<ITemporalTableSqlBuilder<TContext>, TemporalTableSqlBuilder<TContext>>();
             services.AddScoped<ITemporalTableSqlExecutor<TContext>, TemporalTableSqlExecutor<TContext>>();
             services.AddScoped<IMigrator, TemporalTableMigrator<TContext>>();
+            services.AddScoped<IMigrationsSqlGenerator, TemporalTablesMigrationsSqlGenerator<TContext>>();
 
             services.AddSingleton<ITemporalTableSqlGeneratorFactory, TemporalTableSqlGeneratorFactory>();
 
