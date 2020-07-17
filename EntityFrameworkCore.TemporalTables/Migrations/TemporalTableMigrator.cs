@@ -1,4 +1,7 @@
-﻿using EntityFrameworkCore.TemporalTables.Sql;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using EntityFrameworkCore.TemporalTables.Sql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -8,16 +11,16 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace EntityFrameworkCore.TemporalTables.Migrations
 {
-    public class TemporalTableMigrator<TContext> : Migrator 
+    public class TemporalTableMigrator<TContext> : Migrator, ITemporalTableMigrator
         where TContext : DbContext
     {
         private readonly ITemporalTableSqlExecutor<TContext> temporalTableSqlExecutor;
-        
+
         public TemporalTableMigrator(
             IMigrationsAssembly migrationsAssembly,
             IHistoryRepository historyRepository,
             IDatabaseCreator databaseCreator,
-            IMigrationsSqlGenerator migrationsSqlGenerator,
+            IEnumerable<IMigrationsSqlGenerator> migrationsSqlGenerators,
             IRawSqlCommandBuilder rawSqlCommandBuilder,
             IMigrationCommandExecutor migrationCommandExecutor,
             IRelationalConnection connection,
@@ -27,15 +30,17 @@ namespace EntityFrameworkCore.TemporalTables.Migrations
             IDiagnosticsLogger<DbLoggerCategory.Database.Command> commandLogger,
             IDatabaseProvider databaseProvider,
             ITemporalTableSqlExecutor<TContext> temporalTableSqlExecutor)
-            : base(migrationsAssembly, historyRepository, databaseCreator, migrationsSqlGenerator, rawSqlCommandBuilder, migrationCommandExecutor, connection, sqlGenerationHelper, currentDbContext, logger, commandLogger, databaseProvider)
+            : base(migrationsAssembly, historyRepository, databaseCreator, resolveMigrationsSqlGenerator(migrationsSqlGenerators), rawSqlCommandBuilder, migrationCommandExecutor, connection, sqlGenerationHelper, currentDbContext, logger, commandLogger, databaseProvider)
         {
             this.temporalTableSqlExecutor = temporalTableSqlExecutor;
         }
 
+        private static IMigrationsSqlGenerator resolveMigrationsSqlGenerator(IEnumerable<IMigrationsSqlGenerator> migrationsSqlGenerators) => migrationsSqlGenerators?.OfType<TemporalTablesMigrationsSqlGenerator<TContext>>().LastOrDefault() ?? migrationsSqlGenerators?.LastOrDefault();
+
         public override void Migrate(string targetMigration = null)
         {
             base.Migrate(targetMigration);
-            
+
             temporalTableSqlExecutor.Execute();
         }
     }
