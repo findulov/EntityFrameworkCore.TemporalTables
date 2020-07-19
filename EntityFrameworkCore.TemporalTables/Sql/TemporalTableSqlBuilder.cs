@@ -58,28 +58,30 @@ namespace EntityFrameworkCore.TemporalTables.Sql
             StringBuilder sqlBuilder = new StringBuilder();
 
             var relationalEntityType = context.Model.FindEntityType(entityType.Name);
-
-            string tableName = relationalEntityType.GetTableName();
-            string schema = relationalEntityType.GetSchema() ?? "dbo";
-
-            bool isEntityConfigurationTemporal = TemporalEntitiesCache.IsEntityConfigurationTemporal(entityType);
-            bool isEntityTemporalInDatabase = tableHelper.IsTableTemporal(tableName, schema);
-
-            ITemporalTableSqlGenerator temporalTableSqlGenerator = temporalTableSqlGeneratorFactory
-                .CreateInstance(isEntityConfigurationTemporal, isEntityTemporalInDatabase, tableName, schema);
-
-            string temporalTableSql = temporalTableSqlGenerator.Generate();
-
-            if (!string.IsNullOrWhiteSpace(temporalTableSql))
+            if (relationalEntityType is IEntityType)
             {
+
+              string tableName = relationalEntityType.GetTableName();
+              string schema = relationalEntityType.GetSchema() ?? "dbo";
+
+              bool isEntityConfigurationTemporal = TemporalEntitiesCache.IsEntityConfigurationTemporal(entityType);
+              bool isEntityTemporalInDatabase = tableHelper.IsTableTemporal(tableName, schema);
+
+              ITemporalTableSqlGenerator temporalTableSqlGenerator = temporalTableSqlGeneratorFactory
+                  .CreateInstance(isEntityConfigurationTemporal, isEntityTemporalInDatabase, tableName, schema);
+
+              string temporalTableSql = temporalTableSqlGenerator.Generate();
+
+              if (!string.IsNullOrWhiteSpace(temporalTableSql))
+              {
                 sqlBuilder.AppendLine(temporalTableSql);
-                
+
                 if (appendSeparator)
                 {
-                    sqlBuilder.AppendLine(new string('-', 100));
+                  sqlBuilder.AppendLine(new string('-', 100));
                 }
+              }
             }
-
             return sqlBuilder.ToString();
         }
 
