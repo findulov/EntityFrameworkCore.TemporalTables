@@ -20,9 +20,9 @@ namespace EntityFrameworkCore.TemporalTables.Migrations
             CurrentTemporalTableMigrator = temporalTableMigrators.LastOrDefault(m => ReflectiveTemporalTableManager(currentDbContext).IsAssignableFrom(m.GetType()));
         }
 
-        public string GenerateScript(string fromMigration = null, string toMigration = null, bool idempotent = false)
+        public string GenerateScript(string fromMigration = null, string toMigration = null, MigrationsSqlGenerationOptions options = MigrationsSqlGenerationOptions.Default)
         {
-            return CurrentTemporalTableMigrator.GenerateScript(fromMigration, toMigration, idempotent);
+            return CurrentTemporalTableMigrator.GenerateScript(fromMigration, toMigration, options);
         }
 
         public void Migrate(string targetMigration = null)
