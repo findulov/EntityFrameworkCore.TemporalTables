@@ -5,6 +5,7 @@ using EntityFrameworkCore.TemporalTables.Sql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -26,11 +27,12 @@ namespace EntityFrameworkCore.TemporalTables.Migrations
             IRelationalConnection connection,
             ISqlGenerationHelper sqlGenerationHelper,
             ICurrentDbContext currentDbContext,
+            IConventionSetBuilder conventionSetBuilder,
             IDiagnosticsLogger<DbLoggerCategory.Migrations> logger,
             IDiagnosticsLogger<DbLoggerCategory.Database.Command> commandLogger,
             IDatabaseProvider databaseProvider,
             ITemporalTableSqlExecutor<TContext> temporalTableSqlExecutor)
-            : base(migrationsAssembly, historyRepository, databaseCreator, resolveMigrationsSqlGenerator(migrationsSqlGenerators), rawSqlCommandBuilder, migrationCommandExecutor, connection, sqlGenerationHelper, currentDbContext, logger, commandLogger, databaseProvider)
+            : base(migrationsAssembly, historyRepository, databaseCreator, resolveMigrationsSqlGenerator(migrationsSqlGenerators), rawSqlCommandBuilder, migrationCommandExecutor, connection, sqlGenerationHelper, currentDbContext, conventionSetBuilder, logger, commandLogger, databaseProvider)
         {
             this.temporalTableSqlExecutor = temporalTableSqlExecutor;
         }

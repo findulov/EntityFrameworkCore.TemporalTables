@@ -32,7 +32,7 @@ namespace EntityFrameworkCore.TemporalTables.Sql
                 sqlBuilder.AppendLine(sql);
             }
 
-            context.Database.ExecuteSqlCommand(sqlBuilder.ToString());
+            context.Database.ExecuteSqlRaw(sqlBuilder.ToString());
         }
     }
 }

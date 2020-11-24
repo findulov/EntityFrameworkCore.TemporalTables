@@ -17,7 +17,7 @@ namespace EntityFrameworkCore.TemporalTables.Migrations
 
         public TemporalTablesMigrationsSqlGenerator(
             MigrationsSqlGeneratorDependencies dependencies,
-            IMigrationsAnnotationProvider migrationsAnnotations, 
+            IRelationalAnnotationProvider migrationsAnnotations, 
             ITemporalTableSqlGeneratorFactory temporalTableSqlGeneratorFactory,
             ITableHelper<TContext> tableHelper)
             : base(dependencies, migrationsAnnotations)
