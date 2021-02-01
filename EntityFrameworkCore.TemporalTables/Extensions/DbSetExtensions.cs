@@ -21,8 +21,7 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
             where TEntity : class
         {
             ValidateDbSet(dbSet);
-            var PropertyNames = dbSet.GetMappedProperties();
-            PropertyNames = PropertyNames.IncludePeriodProperties();
+            var PropertyNames = dbSet.GetMappedPropertiesWithPeriodProperties();
             var propertyNamesClause = string.Join(", ", PropertyNames);
 
             var sql = FormattableString.Invariant($"SELECT {propertyNamesClause} FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME AS OF {{0}}");
@@ -40,8 +39,7 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
             where TEntity : class
         {
             ValidateDbSet(dbSet);
-            var PropertyNames = dbSet.GetMappedProperties();
-            PropertyNames = PropertyNames.IncludePeriodProperties();
+            var PropertyNames = dbSet.GetMappedPropertiesWithPeriodProperties();
             var propertyNamesClause = string.Join(", ", PropertyNames);
 
             var sql = FormattableString.Invariant($"SELECT {propertyNamesClause} FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME AS OF {{0}}");
@@ -62,8 +60,7 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
             where TEntity : class
         {
             ValidateDbSet(dbSet);
-            var PropertyNames = dbSet.GetMappedProperties();
-            PropertyNames = PropertyNames.IncludePeriodProperties();
+            var PropertyNames = dbSet.GetMappedPropertiesWithPeriodProperties();
             var propertyNamesClause = string.Join(", ", PropertyNames);
 
             var sql = FormattableString.Invariant($"SELECT {propertyNamesClause} FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME BETWEEN {{0}} AND {{1}}");
@@ -84,8 +81,7 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
             where TEntity : class
         {
             ValidateDbSet(dbSet);
-            var PropertyNames = dbSet.GetMappedProperties();
-            PropertyNames = PropertyNames.IncludePeriodProperties();
+            var PropertyNames = dbSet.GetMappedPropertiesWithPeriodProperties();
             var propertyNamesClause = string.Join(", ", PropertyNames);
 
             var sql = FormattableString.Invariant($"SELECT {propertyNamesClause} FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME BETWEEN {{0}} AND {{1}}");
@@ -106,8 +102,7 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
             where TEntity : class
         {
             ValidateDbSet(dbSet);
-            var PropertyNames = dbSet.GetMappedProperties();
-            PropertyNames = PropertyNames.IncludePeriodProperties();
+            var PropertyNames = dbSet.GetMappedPropertiesWithPeriodProperties();
             var propertyNamesClause = string.Join(", ", PropertyNames);
 
             var sql = FormattableString.Invariant($"SELECT {propertyNamesClause} FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME CONTAINED IN ({{0}}, {{1}})");
@@ -128,8 +123,7 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
             where TEntity : class
         {
             ValidateDbSet(dbSet);
-            var PropertyNames = dbSet.GetMappedProperties();
-            PropertyNames = PropertyNames.IncludePeriodProperties();
+            var PropertyNames = dbSet.GetMappedPropertiesWithPeriodProperties();
             var propertyNamesClause = string.Join(", ", PropertyNames);
 
             var sql = FormattableString.Invariant($"SELECT {propertyNamesClause} FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME CONTAINED IN ({{0}}, {{1}})");
@@ -146,8 +140,7 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
             where TEntity : class
         {
             ValidateDbSet(dbSet);
-            var PropertyNames = dbSet.GetMappedProperties();
-            PropertyNames = PropertyNames.IncludePeriodProperties();
+            var PropertyNames = dbSet.GetMappedPropertiesWithPeriodProperties();
             var propertyNamesClause = string.Join(", ", PropertyNames);
 
             var sql = FormattableString.Invariant($"SELECT {propertyNamesClause} FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME ALL");
@@ -215,21 +208,42 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
             return currentDbContext.Context;
         }
 
-        private static IEnumerable<string> GetMappedProperties<TEntity>(this DbSet<TEntity> dbSet)
+        private static IEnumerable<string> GetMappedPropertiesWithPeriodProperties<TEntity>(this DbSet<TEntity> dbSet)
             where TEntity : class
         {
-            var propertyNames = dbSet
-                .GetService<ICurrentDbContext>()
-                .Context.Model.FindEntityType(typeof(TEntity))
-                .GetProperties()
-                .Where(s => !string.IsNullOrWhiteSpace(s.GetColumnName()))
-                .Select(p => $"[{p.GetColumnName()}]");
-            return propertyNames;
-        }
+            //TODO: these columns should be customizable, and should only be added if the period columns are not already mapped from the existing EF configuration
+            string SysStartTime = "[SysStartTime]";
+            string SysEndTime = "[SysEndTime]";
 
-        private static IEnumerable<string> IncludePeriodProperties(this IEnumerable<string> properties)
-        {
-            return properties.Union(new string[] { "[SysStartTime]", "[SysEndTime]" }).Distinct();
+            IEnumerable<string> propertyNames = null;
+
+            var entityType = dbSet
+                .GetService<ICurrentDbContext>()
+                .Context.Model.FindEntityType(typeof(TEntity));
+
+            //TODO: I'm not sure how this will work with Owned entities or TPT/TPH
+            StoreObjectIdentifier? so = StoreObjectIdentifier.Create(entityType, StoreObjectType.Table);
+
+            if (so.HasValue)
+            {
+                propertyNames = entityType
+                    .GetProperties()
+                    .Where(s => !string.IsNullOrWhiteSpace(s.GetColumnName(so.Value)))
+                    .Select(p => $"[{p.GetColumnName(so.Value)}]");
+
+                var isOwned = dbSet
+                    .GetService<ICurrentDbContext>()
+                    .Context.Model.FindEntityType(typeof(TEntity))
+                    .IsOwned();
+
+                //Don't add columns if 
+                if (!isOwned)
+                {
+                    propertyNames = propertyNames.Union(new string[] { SysStartTime, SysEndTime }).Distinct();
+                }
+            }
+
+            return propertyNames;
         }
     }
 }
