@@ -61,26 +61,29 @@ namespace EntityFrameworkCore.TemporalTables.Sql
             if (relationalEntityType is IEntityType)
             {
 
-              string tableName = relationalEntityType.GetTableName();
-              string schema = relationalEntityType.GetSchema() ?? "dbo";
-
-              bool isEntityConfigurationTemporal = TemporalEntitiesCache.IsEntityConfigurationTemporal(entityType);
-              bool isEntityTemporalInDatabase = tableHelper.IsTableTemporal(tableName, schema);
-
-              ITemporalTableSqlGenerator temporalTableSqlGenerator = temporalTableSqlGeneratorFactory
-                  .CreateInstance(isEntityConfigurationTemporal, isEntityTemporalInDatabase, tableName, schema);
-
-              string temporalTableSql = temporalTableSqlGenerator.Generate();
-
-              if (!string.IsNullOrWhiteSpace(temporalTableSql))
-              {
-                sqlBuilder.AppendLine(temporalTableSql);
-
-                if (appendSeparator)
+                string tableName = relationalEntityType.GetTableName();
+                if (tableName is not null) // the above returns null if not mapped to a table (views)
                 {
-                  sqlBuilder.AppendLine(new string('-', 100));
+                    string schema = relationalEntityType.GetSchema() ?? "dbo";
+
+                    bool isEntityConfigurationTemporal = TemporalEntitiesCache.IsEntityConfigurationTemporal(entityType);
+                    bool isEntityTemporalInDatabase = tableHelper.IsTableTemporal(tableName, schema);
+
+                    ITemporalTableSqlGenerator temporalTableSqlGenerator = temporalTableSqlGeneratorFactory
+                        .CreateInstance(isEntityConfigurationTemporal, isEntityTemporalInDatabase, tableName, schema);
+
+                    string temporalTableSql = temporalTableSqlGenerator.Generate();
+
+                    if (!string.IsNullOrWhiteSpace(temporalTableSql))
+                    {
+                        sqlBuilder.AppendLine(temporalTableSql);
+
+                        if (appendSeparator)
+                        {
+                            sqlBuilder.AppendLine(new string('-', 100));
+                        }
+                    }
                 }
-              }
             }
             return sqlBuilder.ToString();
         }
