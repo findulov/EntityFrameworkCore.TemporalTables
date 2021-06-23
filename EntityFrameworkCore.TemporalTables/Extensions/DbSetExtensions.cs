@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using EntityFrameworkCore.TemporalTables.Cache;
 using Microsoft.EntityFrameworkCore;
@@ -20,8 +21,10 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
             where TEntity : class
         {
             ValidateDbSet(dbSet);
+            var PropertyNames = dbSet.GetMappedPropertiesWithPeriodProperties();
+            var propertyNamesClause = string.Join(", ", PropertyNames);
 
-            var sql = FormattableString.Invariant($"SELECT * FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME AS OF {{0}}");
+            var sql = FormattableString.Invariant($"SELECT {propertyNamesClause} FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME AS OF {{0}}");
             return dbSet.FromSqlRaw(sql, date).AsNoTracking();
         }
 
@@ -36,8 +39,10 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
             where TEntity : class
         {
             ValidateDbSet(dbSet);
+            var PropertyNames = dbSet.GetMappedPropertiesWithPeriodProperties();
+            var propertyNamesClause = string.Join(", ", PropertyNames);
 
-            var sql = FormattableString.Invariant($"SELECT * FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME AS OF {{0}}");
+            var sql = FormattableString.Invariant($"SELECT {propertyNamesClause} FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME AS OF {{0}}");
             return dbSet.FromSqlRaw(sql, dateTimeOffset).AsNoTracking();
         }
 
@@ -55,8 +60,10 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
             where TEntity : class
         {
             ValidateDbSet(dbSet);
+            var PropertyNames = dbSet.GetMappedPropertiesWithPeriodProperties();
+            var propertyNamesClause = string.Join(", ", PropertyNames);
 
-            var sql = FormattableString.Invariant($"SELECT * FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME BETWEEN {{0}} AND {{1}}");
+            var sql = FormattableString.Invariant($"SELECT {propertyNamesClause} FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME BETWEEN {{0}} AND {{1}}");
             return dbSet.FromSqlRaw(sql, startDate, endDate).AsNoTracking();
         }
 
@@ -74,9 +81,70 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
             where TEntity : class
         {
             ValidateDbSet(dbSet);
+            var PropertyNames = dbSet.GetMappedPropertiesWithPeriodProperties();
+            var propertyNamesClause = string.Join(", ", PropertyNames);
 
-            var sql = FormattableString.Invariant($"SELECT * FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME BETWEEN {{0}} AND {{1}}");
+            var sql = FormattableString.Invariant($"SELECT {propertyNamesClause} FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME BETWEEN {{0}} AND {{1}}");
             return dbSet.FromSqlRaw(sql, startDateOffset, endDateOffset).AsNoTracking();
+        }
+
+        /// <summary>
+        /// Filters the DbSet with entities between the provided dates.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="dbSet">The database set.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <returns>The entities found between the provided dates.</returns>
+        /// <remarks>The same entity might be returned more than once if it was modified
+        /// during that time frame.</remarks>
+        public static IQueryable<TEntity> ContainedIn<TEntity>(this DbSet<TEntity> dbSet, DateTime startDate, DateTime endDate)
+            where TEntity : class
+        {
+            ValidateDbSet(dbSet);
+            var PropertyNames = dbSet.GetMappedPropertiesWithPeriodProperties();
+            var propertyNamesClause = string.Join(", ", PropertyNames);
+
+            var sql = FormattableString.Invariant($"SELECT {propertyNamesClause} FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME CONTAINED IN ({{0}}, {{1}})");
+            return dbSet.FromSqlRaw(sql, startDate, endDate).AsNoTracking();
+        }
+
+        /// <summary>
+        /// Filters the DbSet with entities between the provided dates.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="dbSet">The database set.</param>
+        /// <param name="startDateOffset">The start date time offset.</param>
+        /// <param name="endDateOffset">The end date time offset.</param>
+        /// <returns>The entities found between the provided dates.</returns>
+        /// <remarks>The same entity might be returned more than once if it was modified
+        /// during that time frame.</remarks>
+        public static IQueryable<TEntity> ContainedIn<TEntity>(this DbSet<TEntity> dbSet, DateTimeOffset startDateOffset, DateTimeOffset endDateOffset)
+            where TEntity : class
+        {
+            ValidateDbSet(dbSet);
+            var PropertyNames = dbSet.GetMappedPropertiesWithPeriodProperties();
+            var propertyNamesClause = string.Join(", ", PropertyNames);
+
+            var sql = FormattableString.Invariant($"SELECT {propertyNamesClause} FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME CONTAINED IN ({{0}}, {{1}})");
+            return dbSet.FromSqlRaw(sql, startDateOffset, endDateOffset).AsNoTracking();
+        }
+
+        /// <summary>
+        /// Selects the entities for all time periods
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="dbSet">The database set.</param>
+        /// <returns>All of the for all time-periods</returns>
+        public static IQueryable<TEntity> ForAll<TEntity>(this DbSet<TEntity> dbSet)
+            where TEntity : class
+        {
+            ValidateDbSet(dbSet);
+            var PropertyNames = dbSet.GetMappedPropertiesWithPeriodProperties();
+            var propertyNamesClause = string.Join(", ", PropertyNames);
+
+            var sql = FormattableString.Invariant($"SELECT {propertyNamesClause} FROM [{GetTableName(dbSet)}] FOR SYSTEM_TIME ALL");
+            return dbSet.FromSqlRaw(sql).AsNoTracking();
         }
 
         /// <summary>
@@ -138,6 +206,44 @@ namespace EntityFrameworkCore.TemporalTables.Extensions
             var serviceProvider = infrastructure.Instance;
             var currentDbContext = serviceProvider.GetService(typeof(ICurrentDbContext)) as ICurrentDbContext;
             return currentDbContext.Context;
+        }
+
+        private static IEnumerable<string> GetMappedPropertiesWithPeriodProperties<TEntity>(this DbSet<TEntity> dbSet)
+            where TEntity : class
+        {
+            //TODO: these columns should be customizable, and should only be added if the period columns are not already mapped from the existing EF configuration
+            string SysStartTime = "[SysStartTime]";
+            string SysEndTime = "[SysEndTime]";
+
+            IEnumerable<string> propertyNames = null;
+
+            var entityType = dbSet
+                .GetService<ICurrentDbContext>()
+                .Context.Model.FindEntityType(typeof(TEntity));
+
+            //TODO: I'm not sure how this will work with Owned entities or TPT/TPH
+            StoreObjectIdentifier? so = StoreObjectIdentifier.Create(entityType, StoreObjectType.Table);
+
+            if (so.HasValue)
+            {
+                propertyNames = entityType
+                    .GetProperties()
+                    .Where(s => !string.IsNullOrWhiteSpace(s.GetColumnName(so.Value)))
+                    .Select(p => $"[{p.GetColumnName(so.Value)}]");
+
+                var isOwned = dbSet
+                    .GetService<ICurrentDbContext>()
+                    .Context.Model.FindEntityType(typeof(TEntity))
+                    .IsOwned();
+
+                //Don't add columns if 
+                if (!isOwned)
+                {
+                    propertyNames = propertyNames.Union(new string[] { SysStartTime, SysEndTime }).Distinct();
+                }
+            }
+
+            return propertyNames;
         }
     }
 }
